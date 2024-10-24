@@ -56,12 +56,14 @@ Prima di iniziare, assicurati di avere i seguenti strumenti:
 2. Usa la seguente configurazione:
      - ![configurazione](image.png)
  - Seleziona `text-embedding-3-large`.
+ - ![configurazione 2 ](image2.png)
+ - ![configurazione 3 ](image3.png)
 3. Chiudi la configurazione e conferma l'integrazione con il workflow di n8n.
 
 ## Esecuzione dell'AI Agent
 Una volta configurati i workflow e le credenziali, puoi eseguire l'AI Agent:
 1. Apri il workflow `AI_Email_Agent` su n8n.
-2. Clicca su **Start** per avviare il processo.
+2. Clicca su **Chat** per avviare il processo.
 3. L'AI agent inizierà a comporre e inviare email in base alle istruzioni ricevute.
 
 ## Tech Stack
