@@ -28,6 +28,7 @@ Prima di iniziare, assicurati di avere i seguenti strumenti:
 1. **Importa i Flussi di Lavoro**:
   - Accedi a n8n.
   - Crea un nuovo workflow.
+  - ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3b9c45bc-36da-45d7-aa64-5ddceedb5dca/ade46dea-c7ae-4757-a3b9-b7d7183e0ddf/image.png)
   - Importa i seguenti file JSON:
       - `AI_Email_Agent.json`
       - `Push_data_to_Pinecone.json`
