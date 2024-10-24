@@ -65,7 +65,7 @@ Una volta configurati i workflow e le credenziali, puoi eseguire l'AI Agent:
 
 ## Tech Stack
 - **n8n**: Automazione del workflow.
-- **OpenAI GPT-4o-mini**: Natural language processing.
+- **OpenAI GPT-4o-mini**: LLM.
 - **Pinecone**: Database vettoriale per la gestione dei contatti.
 - **Google Docs API**: Accesso alla lista di contatti.
 - **Google Gmail API**: Per l'invio delle email.
