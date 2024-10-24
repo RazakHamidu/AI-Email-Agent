@@ -54,7 +54,7 @@ Prima di iniziare, assicurati di avere i seguenti strumenti:
 ## Configurazione di Pinecone
 1. Accedi a Pinecone e crea un indice.
 2. Usa la seguente configurazione:
-     - ![configurazione](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F3b9c45bc-36da-45d7-aa64-5ddceedb5dca%2Fade46dea-c7ae-4757-a3b9-b7d7183e0ddf%2Fimage.png?table=block&id=12914e67-64e3-80c9-9f84-eabb2ea6bb29&spaceId=3b9c45bc-36da-45d7-aa64-5ddceedb5dca&width=2000&userId=62d86d37-7fe8-42c1-87b9-d5d3fb1c5fb2&cache=v2)
+     - ![configurazione](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F3b9c45bc-36da-45d7-aa64-5ddceedb5dca%2F0274979b-3f5e-43a5-bcb4-283d2c9ac6a3%2Fimage.png?table=block&id=12914e67-64e3-80c9-947b-f6764d2e3bcc&spaceId=3b9c45bc-36da-45d7-aa64-5ddceedb5dca&width=2000&userId=62d86d37-7fe8-42c1-87b9-d5d3fb1c5fb2&cache=v2)
  - Seleziona `text-embedding-3-large`.
 3. Chiudi la configurazione e conferma l'integrazione con il workflow di n8n.
 
