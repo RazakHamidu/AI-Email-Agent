@@ -1,0 +1,230 @@
+{
+  "name": "Push date on Pinecone",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "511fe3e7-a733-44bc-b92e-453fbb99e1c5",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "19fa302f-b637-43e2-bf51-768cd2cbd9db",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        460,
+        640
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d5QuQIJprInGK4X2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "289acff2-7c0c-41f7-b52d-c8a3626ec360",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        660,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "chunkSize": 30
+      },
+      "id": "a7cf1a1b-eb95-43d0-8718-103928653aa1",
+      "name": "Token Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        660,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "driveId": {
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1kqxsFrFRF04WgHvMSEGxrx-1lBOarUs7",
+            "mode": "list",
+            "cachedResultName": "AI Email Agent",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1kqxsFrFRF04WgHvMSEGxrx-1lBOarUs7"
+          }
+        },
+        "options": {}
+      },
+      "id": "438b238b-acd7-48e8-b9b4-01d6a9ce07ba",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        120,
+        400
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "6z254nFIhWrobGXB",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json.id }}"
+      },
+      "id": "c0fc4b3e-8a13-4949-80c5-12cc3b43b64c",
+      "name": "Google Docs",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        300,
+        400
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "GxW6KPO6mQG0bMgQ",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "emaillist",
+          "mode": "list",
+          "cachedResultName": "emaillist"
+        },
+        "options": {
+          "pineconeNamespace": "Lista di email"
+        }
+      },
+      "id": "da238765-5b27-4488-b8c0-5c2d7d879e24",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        540,
+        400
+      ],
+      "credentials": {
+        "pineconeApi": {
+          "id": "LpCsWoD4LWml2sNG",
+          "name": "PineconeApi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1c9815fd-a9ae-445f-b84a-0db521591282",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae372c62e73fd2c5fcdcce7ed3303ce4ce0ece17ce506d703ef7d974ff95018f"
+  },
+  "id": "OLSFIS2OV96smL8i",
+  "tags": [
+    {
+      "createdAt": "2024-10-15T08:42:02.720Z",
+      "updatedAt": "2024-10-15T08:42:02.720Z",
+      "id": "3DuhqAcu3kZZGTq5",
+      "name": "AI Email Agent"
+    }
+  ]
+}

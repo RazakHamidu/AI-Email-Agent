@@ -1,0 +1,282 @@
+{
+  "name": "AI Email Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "options": {}
+      },
+      "id": "eeb5905a-68e2-4e5b-9dea-667027d15635",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        140,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d5QuQIJprInGK4X2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "807f3455-b317-4fa5-9226-ed2c074f5772",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "name": "Contacts_Data",
+        "description": "Call this to retrieve information about contacts like email address.l"
+      },
+      "id": "66f6f3b8-63f9-4eae-ad71-92cd24d541d4",
+      "name": "Vector Store Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        640,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "options": {}
+      },
+      "id": "16f26f4a-c560-4eeb-84c7-6e0f3d32df0f",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        880,
+        620
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d5QuQIJprInGK4X2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "076c9ace-2018-47c9-a9bd-fd3c7873d2a6",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        500,
+        820
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d5QuQIJprInGK4X2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0b0def15-ce43-49ee-8471-ab2a93225190",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        40
+      ],
+      "webhookId": "38a4e787-ae94-4711-8d0a-719ee234bb54"
+    },
+    {
+      "parameters": {
+        "name": "send_email",
+        "description": "Call this tool when you need to send an email.",
+        "workflowId": {
+          "__rl": true,
+          "value": "BHJmbI8DCG5W9y6T",
+          "mode": "list",
+          "cachedResultName": "send_email"
+        },
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "[\n  {\n    \"query\": \"sendTo=&subject=&emailType=text&message=&appendAttribution=false&bccList=&ccList=&senderName=\"\n  }\n]\t\n"
+      },
+      "id": "f8c4fe9b-c0c5-46ed-81e8-2216a13f8e66",
+      "name": "send_email",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        380,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "emaillist",
+          "mode": "list",
+          "cachedResultName": "emaillist"
+        },
+        "options": {
+          "pineconeNamespace": "Lista di email"
+        }
+      },
+      "id": "bb6ed87b-0c5a-403b-bd2b-1f3e544c6044",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        500,
+        660
+      ],
+      "credentials": {
+        "pineconeApi": {
+          "id": "LpCsWoD4LWml2sNG",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Context: This Al Agent is designed to handle incoming chat messages and perform various tasks,\nincluding retrieving information from a vector store and sending emails. lt utilizes OpenAl models to\ninterpret user input, respond appropriately, and automate workflows.\n\nBackground:\n\t- The AI Agent leverages a Pinecone Vector Store integrated with OpenAl embeddings to store\n\tand retrieve contextual information relevant to user queries.\n\t\n\t- The vector store is queried through the Vector Store Tool, which utilizes embeddings generated\n\tfrom the OpenAI model.\n\t\n\t- The Al Agent also uses a send_email tool, allowing it to send customized emails based on inputs\n\tit receives.\n\t\nInstructions for the Agent:\n1. When a chat message is received:\n\t- Analyse the input using the OpenAl Chat Model to understand the users intent.\n\t\n\t- Use relevant tools (e.g., Vector Store Tool) to fetch information from the Pinecone Vector\n\tStore if the input suggests a need for stored context or data.\n\t\n\t- Utilize the OpenAl model for generating responses or crafting email content based on the\n\tretrieved data.\n2. Email Sending Functionality:\n\t- When instructed to send an email, use the parameters provided:\n\t\t- sendTo : Specify the recipienes email address.\n\t\t- subject : Set the subject line of the email.\n\t\t- emailType : Set as \"text\" by default.\n\t\t- message : Define the main body content of the email,]\n\t\t- senderName : Define the senderis name if specified.\n\t- Ensure that no options like appendAttribution, bccList , or ccList are included unless\nexplicitly required.\t\n\n3. Response Generation:\n\t - Use the information retrieved from the Vector Store along with the OpenAl model to\n\tgenerate appropriate responses to user queries.\n\t- If the task is not directly related to information retrieval, use the OpenAl Chat Model to\n\tgenerate a meaningful and relevant output.\n\t\n4. Overall Goal:\n\t- Help users efficiently manage tasks like information retrieval and email communication.\n\t- Enhance productivity by automating repetitive tasks utilizing Al to interpret and act on\n\tcomplex user inputs.\nSign of email from Razak ",
+          "returnIntermediateSteps": true
+        }
+      },
+      "id": "203b865c-0909-4271-b5c2-fd4c8cee6c82",
+      "name": "AI Email Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        380,
+        40
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Email Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Email Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send_email": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ae703b31-6b32-4fe5-ab35-1135e4b3887b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae372c62e73fd2c5fcdcce7ed3303ce4ce0ece17ce506d703ef7d974ff95018f"
+  },
+  "id": "Ywr2qKNp1UCvCOZk",
+  "tags": [
+    {
+      "createdAt": "2024-10-15T10:19:40.807Z",
+      "updatedAt": "2024-10-15T10:19:40.807Z",
+      "id": "FioFv3QAY5Cbv5Bp",
+      "name": "project"
+    }
+  ]
+}
